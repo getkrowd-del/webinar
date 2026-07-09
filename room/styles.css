@@ -52,13 +52,16 @@
   #pollCard .popt:hover{border-color:var(--accent);}
   #pollThanks{display:none;color:var(--accent);font-weight:700;font-size:13.5px;padding:4px 0;}
   .chatControls{border-top:1px solid #1e2f29;padding:10px 12px;}
+  #chatClosed{display:none;color:var(--muted);font-size:12.5px;text-align:center;padding:4px 0 8px;}
   .qtoggle{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);margin-bottom:8px;cursor:pointer;user-select:none;}
   .qtoggle input{accent-color:var(--amber);width:15px;height:15px;cursor:pointer;}
   .qtoggle.on{color:var(--amber);font-weight:600;}
   .chatInput{display:flex;gap:8px;}
   .chatInput input{flex:1;background:var(--panel2);border:1px solid #24382f;color:var(--text);border-radius:8px;padding:10px 12px;font-size:14px;outline:none;}
+  .chatInput input:disabled{opacity:.5;}
   .chatInput input.qmode{border-color:var(--amber);}
   .chatInput button{background:var(--accent);border:none;color:#04231b;font-weight:700;border-radius:8px;padding:0 16px;cursor:pointer;}
+  .chatInput button:disabled{opacity:.5;cursor:not-allowed;}
   #nameModal{position:fixed;inset:0;background:rgba(4,10,8,.9);z-index:50;display:flex;align-items:center;justify-content:center;}
   #nameModal .card{background:var(--panel);border:1px solid #24382f;border-radius:14px;padding:28px;max-width:360px;width:92%;text-align:center;}
   #nameModal h2{font-size:19px;margin-bottom:6px;}
