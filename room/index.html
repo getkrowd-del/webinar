@@ -422,10 +422,11 @@
       <div id="pollThanks">✓ Thanks — answer recorded!</div>
     </div>
     <div class="chatControls">
+      <div id="chatClosed">💤 Chat is closed — it opens when the next session goes live.</div>
       <label class="qtoggle" id="qLabel"><input type="checkbox" id="isQ" onchange="qToggled()"> ❓ This is a question for the host</label>
       <div class="chatInput">
         <input id="chatText" placeholder="Say something…" maxlength="240" onkeydown="if(event.key==='Enter')sendChat()">
-        <button type="button" onclick="sendChat()">Send</button>
+        <button type="button" id="sendBtn" onclick="sendChat()">Send</button>
       </div>
     </div>
   </div>
@@ -436,7 +437,7 @@ var SHEET_URL='https://paymegpt.com/api/public/landing-pages/5372/sheet-data';
 var CHAT_WEBHOOK='https://paymegpt.com/api/webhooks/flow/4222/1208d026e97178a21ef977b801b26ef68850942948ae6fdffed98b4f6dbb4297';
 var CALL_WEBHOOK='https://paymegpt.com/api/webhooks/flow/4224/e91e7fd8443d498be99634dfa7ae68797c31c8c8081a5ee4477e10af375c7535';
 var POLL_WEBHOOK='https://paymegpt.com/api/webhooks/flow/4225/16b4ba7e96e615c391872ecc8476a0f4accaeca2d4cc5cbdadcb927816bfb0a1';
-var cfg={videoId:'aqz-KE-bpKQ',durationSeconds:634,scheduleMinutes:60,maxAttendees:250,baseAttendees:40,webinarTitle:'Live Broadcast',liveMode:'no',forceEnded:'no'};
+var cfg={videoId:'aqz-KE-bpKQ',durationSeconds:634,scheduleMinutes:15,maxAttendees:250,baseAttendees:40,webinarTitle:'Live Broadcast',liveMode:'no',forceEnded:'no'};
 var chatRows=[],polls=[],offers=[],shownKeys={},myName='',myEmail='',yt=null,ytReady=false,ended=false,started=false,activePoll=null,activeOffer=null,offerDismissed=false;
 
 function g(r,k){if(r[k]!==undefined)return r[k];var lk=k.toLowerCase();for(var p in r){if(p.toLowerCase()===lk)return r[p];}return '';}
@@ -487,6 +488,12 @@ function maybeStart(){
 function unmute(){if(yt){yt.unMute();yt.setVolume(100);document.getElementById('unmute').style.display='none';}}
 
 /* ---- chat ---- */
+function setChatEnabled(on){
+  document.getElementById('chatText').disabled=!on;
+  document.getElementById('sendBtn').disabled=!on;
+  document.getElementById('chatClosed').style.display=on?'none':'block';
+  document.getElementById('qLabel').style.display=on?'flex':'none';
+}
 function renderMsg(c,mine,failed){
   var key=c.name+'|'+c.off+'|'+c.msg;if(shownKeys[key])return;shownKeys[key]=1;
   var d=document.createElement('div');d.className='msg'+(mine?' mine':'')+(c.q?' q':'');
@@ -504,7 +511,8 @@ function qToggled(){
   document.getElementById('chatText').placeholder=on?'Ask your question…':'Say something…';
 }
 function sendChat(){
-  var i=document.getElementById('chatText'),txt=i.value.trim();if(!txt||ended)return;i.value='';
+  if(ended)return;
+  var i=document.getElementById('chatText'),txt=i.value.trim();if(!txt)return;i.value='';
   var isQ=document.getElementById('isQ').checked;
   document.getElementById('isQ').checked=false;qToggled();
   var off=isLiveMode()?Math.floor(Date.now()/1000)%86400:elapsed();
@@ -616,6 +624,7 @@ function endBroadcast(){
   ended=true;
   try{if(yt)yt.stopVideo();}catch(e){}
   hidePoll();
+  setChatEnabled(false);
   document.getElementById('cta_name').value=myName;
   document.getElementById('cta_email').value=realEmail();
   document.getElementById('stateOverlay').style.display='flex';
